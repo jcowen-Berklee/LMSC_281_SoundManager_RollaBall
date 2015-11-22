@@ -5,6 +5,10 @@ using UnityEngine;
 using System.Collections;
 
 public class SoundManager : MonoBehaviour {
+	 
+	 //Garett Schmidt - Variabes for pitch and Amplutide automation
+    public float amp = 1f;
+    public float pch = 1f;
 	
 	//since we know we will only have one sound manager in the game we can create a static instance
 	public static SoundManager instance;
@@ -32,4 +36,15 @@ public class SoundManager : MonoBehaviour {
 
 	//to use this function in another script use this code:
 	//SoundManager.instance.PlayObjectSoundOnce (this.gameObject);
+	//Garett Schmidt - Function to randomize pitch and volume
+
+    void PlayRandomPitchAndVolume()
+    {
+        //Pitch and Amplitude Randomization.
+        amp = Random.Range(0.9f, 1.1f);
+        pch = Random.Range(0.8f, 1.2f);
+        GetComponent<AudioSource>().volume = amp;
+        GetComponent<AudioSource>().pitch = pch;
+        GetComponent<AudioSource>().Play();
+    }
 }
