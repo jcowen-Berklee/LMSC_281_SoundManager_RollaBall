@@ -1,4 +1,5 @@
 //Made by Alexandre Jannuzzi & Alberto Menezes for Berklee Game Jam 2015
+//Modified by Raz Ezra
 
 using UnityEngine;
 using System.Collections;
@@ -26,11 +27,8 @@ public class Player02Movement : MonoBehaviour {
 	public int powerUpSpawn;
 	public int deathTime;
 	public int pointsToVictory;
-	public AudioSource [] sounds;
-	public AudioSource speedOn;
-	public AudioSource speedOff;
-	public AudioSource killOn;
-	public AudioSource killOff;
+	public AudioClip [] sounds; //RE - store all sounds related to this object
+	AudioSource playSound; //RE - for relationship with AudioSource component
 	public float count;
 
 	private Rigidbody rb;
@@ -48,11 +46,6 @@ public class Player02Movement : MonoBehaviour {
 		mesh = GetComponent <MeshRenderer> ();
 		count = 0;
 		count2Text.text = "P2 Points: " + count.ToString ();
-		sounds = GetComponents<AudioSource>();
-		speedOn = sounds[0];
-		speedOff = sounds[1];
-		killOn = sounds[2];
-		killOff = sounds[3];
 	}
 	
 	void FixedUpdate () {
@@ -87,7 +80,9 @@ public class Player02Movement : MonoBehaviour {
 		// and another cube is instantiated on the previously declared random position
 		if (other.gameObject.CompareTag ("Pick Up")) {
 			other.gameObject.transform.position = position;
-			other.gameObject.GetComponent<AudioSource>().Play () ;
+			SoundManager.PlayObjectSoundOnce(other.gameObject); //RE - Call Sound Manager to play sound of other object
+			SoundManager.RaisePitch(other.gameObject); //RE - Call Sound Manager to raise the pitch of object's AudioSource
+			SoundManager.RandomVolume(other.gameObject); //RE - Call SoundManager to randomize the volume of an object's AudioSource
 			count = count + 1;
 			count2Text.text = "P2 Points: " + count.ToString ();
 			Obstacle3.transform.position = position2;
@@ -114,27 +109,29 @@ public class Player02Movement : MonoBehaviour {
 		// Speed power-up pickup
 		if (other.gameObject.CompareTag ("Speed")) {
 			speedUp = true;
-			speedOn.Play();
+			PlaySoundOnce (0); //RE - Play Speed On sound
 			other.gameObject.SetActive (false);
 			yield return new WaitForSeconds (powerUpDuration);
 			speedUp = false;
-			speedOff.Play();
+			PlaySoundOnce (1); //RE - Play Speed Off sound
 			yield return new WaitForSeconds (powerUpSpawn);
 			other.gameObject.SetActive (true);
+			SoundManager.PlayObjectSoundOnce(other.gameObject);
 		}
 
 		// Destroyer power-up pickup
 		if (other.gameObject.CompareTag ("Kill")) {
 			pul.enabled = !pul.enabled;
-			killOn.Play ();
+			PlaySoundOnce (2); //RE - Play Kill On sound
 			other.gameObject.SetActive (false);
 			canKill = true;
 			yield return new WaitForSeconds (powerUpDuration);
 			pul.enabled = false;
-			killOff.Play();
+			PlaySoundOnce (3); //RE - Play Kill Off sound
 			canKill = false;
 			yield return new WaitForSeconds (powerUpSpawn);
 			other.gameObject.SetActive (true);
+			SoundManager.PlayObjectSoundOnce(other.gameObject);
 		}
 
 		// When you hit the enemy that spawns halfway through the game
@@ -171,5 +168,11 @@ public class Player02Movement : MonoBehaviour {
 				col.gameObject.SetActive (true);
 			}
 		}
+	}
+
+	//Raz Ezra - function to play sound
+	void PlaySoundOnce(int soundID){
+		playSound = GetComponent<AudioSource>(); //get AudioSource Component
+		playSound.PlayOneShot (sounds [soundID]);//play correct sound via the AudioSource
 	}
 }
