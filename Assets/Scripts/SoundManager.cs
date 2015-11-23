@@ -1,4 +1,6 @@
-﻿//LMSC-281 Logic and Programming
+﻿//Alan Hsiao, Logic & Programming, Rollerball/Soundmanager Project, 11/23/15
+
+//LMSC-281 Logic and Programming
 //Fall 2015 Jeanine Cowen
 
 using UnityEngine;
