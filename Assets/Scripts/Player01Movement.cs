@@ -1,4 +1,8 @@
-﻿//Made by Alexandre Jannuzzi & Alberto Menezes for Berklee Game Jam 2015
+﻿//Alan Hsiao, Logic & Programming, Rollerball/Soundmanager Project, 11/23/15,
+
+//AH = comment by Alan Hsiao
+
+//Made by Alexandre Jannuzzi & Alberto Menezes for Berklee Game Jam 2015
 
 using UnityEngine;
 using System.Collections;
@@ -34,6 +38,8 @@ public class Player01Movement : MonoBehaviour {
 	public AudioSource killOff;
 	public AudioSource countSound;
 	public AudioSource goSound;
+	//AH - sound for hitting a wall
+	public AudioSource wallHit;
 	public float count;
 
 	private Rigidbody rb;
@@ -61,6 +67,8 @@ public class Player01Movement : MonoBehaviour {
 		killOff = sounds[3];
 		countSound = sounds[4];
 		goSound = sounds [5];
+		//AH - wallHit sound added to array
+		wallHit = sounds [6];
 		StartCoroutine(CountDown());
 		
 		//This hides the Restart button
@@ -171,6 +179,12 @@ public class Player01Movement : MonoBehaviour {
 			mesh.enabled = !mesh.enabled;
 			yield return new WaitForSeconds (powerUpSpawn);
 			Instantiate (Enemy1PreFab, enemyposition, Quaternion.identity);
+		}
+			
+		//AH - when object collides w/ other object tagged as "Wall", other object's AudioSource will play
+		if (other.gameObject.CompareTag ("Wall")) {
+			//SoundManager.instance.PlayObjectSoundOnce (this.gameObject);
+			other.gameObject.GetComponent<AudioSource>().Play () ;
 		}
 	}
 
